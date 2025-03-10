@@ -1,6 +1,39 @@
 from itertools import permutations, product
 
 class Solver:
+    """
+    A class to solve the 24 game, where the goal is to find a way to 
+    manipulate four numbers so that the end result is 24.
+
+    Attributes:
+    ----------
+    numbers : list
+        A list of four integers to be used in the game.
+
+    Methods:
+    -------
+    __init__(numbers):
+        Initializes the Solver with a list of numbers.
+    
+    apply_operation(a, b, op):
+        Applies a given arithmetic operation to two numbers and returns 
+        the result.
+    
+    interleave(numbers, operators):
+        Interleaves a list of numbers with a list of operators.
+    
+    generate_expressions(numbers, operators):
+        Generates all possible expressions by inserting parentheses in 
+        different ways.
+    
+    evaluate_expression(expression):
+        Evaluates a given arithmetic expression and returns the result if 
+        it is an integer, otherwise returns None.
+    
+    find_solutions():
+        Finds all possible expressions that evaluate to 24 using the given 
+        numbers and returns them as a list.
+    """
     def __init__(self, numbers):
         self.numbers = numbers
 
