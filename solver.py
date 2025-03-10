@@ -88,24 +88,24 @@ class Solver:
         combination of operators, it generates all possible expressions and evaluates them 
         to check if they are close enough to the target value (24).
         Returns:
-            list: A list of expressions (as strings) that evaluate to the target value.
+            list: A list of unique expressions (as strings) that evaluate to the target value.
         """
-        solutions = []
+        solutions = set()  # Use a set to store unique solutions
         operators = ['+', '-', '*', '/']
         # Generate all permutations of numbers and operators
-        num_permutations = permutations(self._numbers) # This is an iterator
+        num_permutations = set(permutations(self._numbers)) # Use a set to store unique permutations
+        op_combinations = set(product(operators, repeat=3)) # Use a set to store unique combinations
     
         for num_perm in num_permutations:
-            # BUG: in nested forloop, need to re-gen this iterator every time!!!
-            op_combinations = product(operators, repeat=3) # This is an iterator
             for op_comb in op_combinations:
                 expressions = self._generate_expressions(num_perm, op_comb)
                 for expr in expressions:
                     result = self._evaluate_expression(expr)
+                    # print(f"Trying: {expr} = {result}")
                     # For rounding errors, check if it is close enough
                     if (result is not None) and abs(result - self._target) < _Epsilon:
-                        solutions.append(expr)
-        return solutions
+                        solutions.add(expr)  # Add to set to ensure uniqueness
+        return list(solutions)  # Convert set back to list
     
     def find_solutions(self):
         return self._find_solutions_brute_force()
