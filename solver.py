@@ -1,6 +1,5 @@
 from itertools import permutations, product
 
-_Target = 24 # The target number to reach
 _Epsilon = 1e-10 # Small value to account for floating point errors
 
 class Solver:
@@ -14,8 +13,12 @@ class Solver:
         A list of four integers to be used in the game.
     """
 
-    def __init__(self, numbers):
-        self.numbers = numbers
+    def __init__(self, numbers: list[int], target: int = 24):
+        """
+        Constructs a Solver object with a list of numbers.
+        """
+        self._numbers = numbers
+        self._target = target
 
 
     def _interleave(self, numbers, operators):
@@ -61,11 +64,11 @@ class Solver:
         except ZeroDivisionError:
             return None
 
-    def find_solutions(self):
+    def _find_solutions_brute_force(self):
         solutions = []
         operators = ['+', '-', '*', '/']
         # Generate all permutations of numbers and operators
-        num_permutations = permutations(self.numbers)
+        num_permutations = permutations(self._numbers)
     
         for num_perm in num_permutations:
             # Need to re-gen every time because op_combinations is an iterator
@@ -75,9 +78,12 @@ class Solver:
                 for expr in expressions:
                     result = self._evaluate_expression(expr)
                     # For rounding errors, check if it is close enough
-                    if (result is not None) and abs(result - _Target) < _Epsilon:
+                    if (result is not None) and abs(result - self._target) < _Epsilon:
                         solutions.append(expr)
         return solutions
     
+    def find_solutions(self):
+        return self._find_solutions_brute_force()
+
     def has_solution(self):
         return len(self.find_solutions()) > 0
