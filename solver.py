@@ -78,29 +78,33 @@ class Solver:
     def evaluate_expression(self, expression):
         try:
             result = eval(expression)
-            return result if result.is_integer() else None
+            return result
         except ZeroDivisionError:
             return None
 
-    def find_solutions(self):
+    def solve(self):
         solutions = []
         operators = ['+', '-', '*', '/']
         # Generate all permutations of numbers and operators
         num_permutations = permutations(self.numbers)
-        op_combinations = product(operators, repeat=3)
+    
         for num_perm in num_permutations:
+            # Need to re-gen every time because op_combinations is an iterator
+            op_combinations = product(operators, repeat=3)
             for op_comb in op_combinations:
                 expressions = self.generate_expressions(num_perm, op_comb)
                 for expr in expressions:
-                    if self.evaluate_expression(expr) == 24:
+                    result = self.evaluate_expression(expr)
+                    # For rounding errors, check if it is close enough
+                    if (result is not None) and abs(result - 24) < 1e-10:
                         solutions.append(expr)
         return solutions
 
 # Example usage
 if __name__ == '__main__':
-    numbers = [4, 8, 3, 6]
+    numbers = [5, 5, 5, 1]
     solver = Solver(numbers)
-    solutions = solver.find_solutions()
+    solutions = solver.solve()
     if solutions:
         print("Solutions found:")
         for sol in solutions:
