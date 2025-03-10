@@ -1,5 +1,8 @@
 from itertools import permutations, product
 
+_Target = 24 # The target number to reach
+_Epsilon = 1e-10 # Small value to account for floating point errors
+
 class Solver:
     """
     A class to solve the 24 game, where the goal is to find a way to 
@@ -72,21 +75,9 @@ class Solver:
                 for expr in expressions:
                     result = self._evaluate_expression(expr)
                     # For rounding errors, check if it is close enough
-                    if (result is not None) and abs(result - 24) < 1e-10:
+                    if (result is not None) and abs(result - _Target) < _Epsilon:
                         solutions.append(expr)
         return solutions
     
     def has_solution(self):
         return len(self.find_solutions()) > 0
-
-# Example usage
-if __name__ == '__main__':
-    numbers = [5, 5, 5, 1]
-    solver = Solver(numbers)
-    solutions = solver.find_solutions()
-    if solutions:
-        print(f"Solutions found: {len(solutions)}")
-        for sol in solutions:
-            print(sol)
-    else:
-        print("No solution found.")
