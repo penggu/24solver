@@ -21,7 +21,8 @@ def process_combo(combo):
     solutions = solver.find_solutions()
     return {
         'cards': ' '.join(map(str, values)),
-        'has_solution': len(solutions) > 0,
+        'has_solution': 'Y' if len(solutions) > 0 else 'N',
+        'num_solutions': len(solutions),
         'solutions': solutions
     }
 
@@ -84,11 +85,10 @@ def main():
     # Write all results to CSV
     with open(_SolutionCsvFileName, 'w', newline='') as f:
         writer = csv.writer(f)
-        writer.writerow(['cards', 'has_solution', 'solutions'])
+        writer.writerow(['cards', 'has_solution', 'num_solutions'])
         for key, value in existing_solutions.items():
-            solutions = json.dumps(value['solutions'])
-            solutions = str(value['solutions']).replace(',', ' or')
-            writer.writerow([key, value['has_solution'], solutions])
+            # solutions = str(value['solutions']).replace(',', ' or')
+            writer.writerow([key, value['has_solution'], value['num_solutions']])
 
     print(f"Saved {len(existing_solutions)} total solutions")
     
