@@ -3,10 +3,12 @@ from solver import Solver
 from multiprocessing import Pool, cpu_count
 import json
 import os.path
+import csv
 
 _Cards = 52  # Number of cards in a deck
 _NProc = cpu_count()  # Number of CPU cores
-_SolutionFileName = 'card_solutions.json'
+_SolutionJsonFileName = 'card_solutions.json'
+_SolutionCsvFileName = 'card_solutions.csv'
 
 def card_value(card):
     """Convert card number (1-52) to actual value (1-13)"""
@@ -25,10 +27,19 @@ def process_combo(combo):
 
 def load_existing_solutions():
     """Load existing solutions from JSON file if it exists"""
-    if os.path.exists(_SolutionFileName):
-        with open(_SolutionFileName, 'r') as f:
+    if os.path.exists(_SolutionJsonFileName):
+        with open(_SolutionJsonFileName, 'r') as f:
             return json.load(f)
     return {}
+
+def key_to_tuple(key):
+    """Convert space-separated string of numbers to tuple"""
+    return tuple(map(int, key.split()))
+
+def sort_map_by_key(data: dict):
+    """Sort dictionary by key converted to tuple"""
+    return dict(sorted(data.items(), key=lambda x: key_to_tuple(x[0])))
+
 
 def main():
     # Try to load existing solutions
@@ -63,9 +74,23 @@ def main():
         # Merge with existing solutions
         existing_solutions.update(solutions)
     
+    # Sort solutions by card values
+    existing_solutions = sort_map_by_key(existing_solutions)
+
     # Write all results to JSON
-    with open(_SolutionFileName, 'w') as f:
+    with open(_SolutionJsonFileName, 'w') as f:
         json.dump(existing_solutions, f, indent=2)
 
+    # Write all results to CSV
+    with open(_SolutionCsvFileName, 'w', newline='') as f:
+        writer = csv.writer(f)
+        writer.writerow(['cards', 'has_solution', 'solutions'])
+        for key, value in existing_solutions.items():
+            solutions = json.dumps(value['solutions'])
+            solutions = str(value['solutions']).replace(',', ' or')
+            writer.writerow([key, value['has_solution'], solutions])
+
+    print(f"Saved {len(existing_solutions)} total solutions")
+    
 if __name__ == '__main__':
     main()
