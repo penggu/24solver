@@ -5,7 +5,7 @@ _Epsilon = 1e-10 # Small value to account for floating point errors
 class Solver:
     """
     A class to solve the 24 game, where the goal is to find a way to 
-    manipulate four numbers so that the end result is 24.
+    manipulate 4 numbers so that the end result is 24.
     """
 
     def __init__(self, numbers: list[int], target: int = 24):
@@ -16,7 +16,7 @@ class Solver:
         self._target = target
 
 
-    def _interleave(self, numbers, operators):
+    def _interleave(self, numbers: list, operators: list) -> list:
         """
         Interleaves a list of numbers and a list of operators.
 
@@ -35,7 +35,7 @@ class Solver:
         interleaved.append(numbers[-1])
         return interleaved
 
-    def _generate_expressions(self, numbers, operators):
+    def _generate_expressions(self, numbers: list[int], operators: list[str]) -> list[str]:
         """
         Generate all possible expressions by interleaving numbers and operators
         and inserting parentheses in different patterns.
@@ -63,7 +63,7 @@ class Solver:
             expressions.append(expression)
         return expressions
 
-    def _evaluate_expression(self, expression):
+    def _evaluate_expression(self, expression: str) -> float | None:
         """
         Evaluates a mathematical expression and returns the result.
 
@@ -80,7 +80,7 @@ class Solver:
         except ZeroDivisionError:
             return None
 
-    def _find_solutions_brute_force(self):
+    def _find_solutions_brute_force(self) -> list[str]:
         """
         Finds all possible solutions to the 24 game using a brute force approach.
         This method generates all permutations of the given numbers and all combinations
@@ -107,8 +107,8 @@ class Solver:
                         solutions.add(expr)  # Add to set to ensure uniqueness
         return list(solutions)  # Convert set back to list
     
-    def find_solutions(self):
+    def find_solutions(self) -> list[str]:
         return self._find_solutions_brute_force()
 
-    def has_solution(self):
+    def has_solution(self) -> bool:
         return len(self.find_solutions()) > 0
