@@ -16,7 +16,7 @@ def main():
     sorted_rows = sorted(rows, key=sort_key)
     
     # Write sorted results back to CSV
-    with open('card_solutions.csv', 'w', newline='') as f:
+    with open('card_solutions_sorted.csv', 'w', newline='') as f:
         writer = csv.writer(f)
         writer.writerow(header)
         writer.writerows(sorted_rows)
